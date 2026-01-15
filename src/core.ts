@@ -43,7 +43,9 @@ function transform<S = never>(platform: string, source: h[], rules?: Visitor<S>)
 function relativeTime(date: number) {
   const now = Date.now()
   const diff = date - now
-  const seconds = Math.floor(diff / 1000)
+  const abs = Math.abs(diff)
+
+  const seconds = Math.floor(abs / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
@@ -54,10 +56,10 @@ function relativeTime(date: number) {
     if (minutes > 0) return `${minutes}分钟内`
     return `${seconds}秒内`
   } else {
-    if (days < 0) return `${Math.abs(days)}天前`
-    if (hours < 0) return `${Math.abs(hours)}小时前`
-    if (minutes < 0) return `${Math.abs(minutes)}分钟前`
-    return `${Math.abs(seconds)}秒前`
+    if (days > 0) return `${days}天前`
+    if (hours > 0) return `${hours}小时前`
+    if (minutes > 0) return `${minutes}分钟前`
+    return `${seconds}秒前`
   }
 }
 
@@ -175,11 +177,12 @@ export function apply(ctx: Context, config: Config) {
         for (const element of filtered) {
           if (element.type === 'text') {
             element.attrs.content = element.attrs.content.replace(
-              /<t:(\d+):([a-zA-Z])>/g,
+              /<t:(\d+):([a-zA-Z])\/?>/g,
               (match: string, timestamp: string, format: string) => {
-                if (format === 'F') {
+                if (format === 'F' || format === 'f') {
                   const date = new Date(+timestamp * 1000)
                   const options = {
+                    timeZone: 'Asia/Shanghai',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -190,6 +193,13 @@ export function apply(ctx: Context, config: Config) {
                   return date.toLocaleString(locale, options)
                 } else if (format === 'R') {
                   return relativeTime(+timestamp * 1000)
+                } else if (format === 'S') {
+                  const date = new Date(+timestamp * 1000)
+                  const options = {
+                    timeZone: 'Asia/Shanghai'
+                  } as const
+                  const locale = Object.keys(Object.values(ctx.root.i18n.locales)[0])[0]
+                  return date.toLocaleString(locale, options)
                 } else {
                   return match
                 }
