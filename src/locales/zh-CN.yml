@@ -23,6 +23,7 @@
             platform: 平台名
             channelId: 频道 ID
             simulateOriginal: 模拟原始作者 (仅在 discord 平台生效)
+            hidePrefix: 是否隐藏发送的前缀
           - name: 来源代称 (可随意填写)
             selfId: 自身 ID
             blockingWords:
@@ -32,6 +33,7 @@
             channelId: 频道 ID
             simulateOriginal: 模拟原始作者 (仅在 discord 平台生效, 仅在「目标」生效)
             onlyQuote: 是否仅转发引用机器人自身的消息
+            hidePrefix: 是否隐藏发送的前缀
 - $description: 转发规则设置
   rules:
     $description: 对应规则

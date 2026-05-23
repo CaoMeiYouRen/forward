@@ -224,7 +224,7 @@ export function apply(ctx: Context, config: Config) {
           continue
         }
 
-        let prefix: h
+        let prefix: h | undefined
         if (target.simulateOriginal && target.platform === 'discord') {
           let avatar = event.user.avatar
           if (event.platform === 'telegram') {
@@ -234,7 +234,7 @@ export function apply(ctx: Context, config: Config) {
             name: `[${sConfig.name ?? ''}] ${session.username}`,
             avatar
           })
-        } else {
+        } else if (!target.hidePrefix) {
           const altName = sConfig.name ? `${sConfig.name} - ` : ''
           prefix = h.text(`[${altName}${session.username}]\n`)
         }
@@ -242,7 +242,7 @@ export function apply(ctx: Context, config: Config) {
         const delay = config.delay[target.platform] ?? 200
         if (index) await ctx.sleep(delay)
 
-        const payload: h[] = [prefix, ...filtered]
+        const payload: h[] = prefix ? [prefix, ...filtered] : filtered
         if (event.message.quote) {
           let quoteId: string | undefined
           if (event.selfId === quoteUser.id) {

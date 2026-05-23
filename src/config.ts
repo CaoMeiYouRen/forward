@@ -14,6 +14,7 @@ interface Target {
   platform: string
   disabled: boolean
   simulateOriginal: boolean
+  hidePrefix: boolean
 }
 
 interface SourceConst extends Source {
@@ -57,6 +58,7 @@ const targetConst: Schema<TargetConst> = Schema.object({
   ...share,
   selfId: Schema.string().required(),
   simulateOriginal: Schema.boolean().default(false),
+  hidePrefix: Schema.boolean().default(false),
   disabled: Schema.boolean().default(false)
 })
 
@@ -68,7 +70,8 @@ const fullConst: Schema<FullConst> = Schema.object({
   blockingWords: Schema.array(String).role('table').default([]),
   simulateOriginal: Schema.boolean().default(false),
   onlyQuote: Schema.boolean().default(false),
-  disabled: Schema.boolean().default(false),
+  hidePrefix: Schema.boolean().default(false),
+  disabled: Schema.boolean().default(false)
 })
 
 export const Config: Schema<Config> = Schema.intersect([
