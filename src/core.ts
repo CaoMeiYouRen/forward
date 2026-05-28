@@ -20,6 +20,9 @@ interface Sent {
 
 type Visitor<S> = Dict<h.Transformer<S>> | h.Visit<Awaitable<boolean | h.Fragment>, S>
 
+// Some adapters emit opaque message or channel identifiers longer than 64 chars.
+const IDENTIFIER_TYPE = 'string(255)'
+
 function transform<S = never>(platform: string, source: h[], rules?: Visitor<S>): Promise<h[]> {
   return h.transformAsync(source, {
     at(attrs) {
@@ -67,12 +70,12 @@ export function apply(ctx: Context, config: Config) {
   ctx.model.extend('myrtus_forward_sent', {
     id: 'unsigned',
     time: 'timestamp',
-    from: 'string(64)',
-    to: 'string(64)',
-    from_sid: 'string(64)',
-    to_sid: 'string(64)',
-    from_channel_id: 'string(64)',
-    to_channel_id: 'string(64)',
+    from: IDENTIFIER_TYPE,
+    to: IDENTIFIER_TYPE,
+    from_sid: IDENTIFIER_TYPE,
+    to_sid: IDENTIFIER_TYPE,
+    from_channel_id: IDENTIFIER_TYPE,
+    to_channel_id: IDENTIFIER_TYPE,
   }, {
     autoInc: true
   })
